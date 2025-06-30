@@ -267,8 +267,9 @@
   .dot.light  { background: var(--green);}
   .beaver-hold {
     position: fixed;
-    right: 20px; bottom: 80px;
-    z-index: 105;
+    right: 20px; 
+    bottom: 120px; /* было 80px, теперь бобр выше! */
+    z-index: 106; /* чуть выше show-all-btn */
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -295,24 +296,35 @@
     transition: background 0.4s, color 0.4s;
   }
   @keyframes fadeinb { from{opacity:0;} to{opacity:1;} }
-  .show-all-btn {
-    position: fixed;
-    bottom: 62px; left: 50%; transform: translateX(-50%);
-    z-index: 200;
-    background: rgba(250,248,236,0.97);
-    color: #a98912;
-    border: none;
-    font-size: 1.07em;
-    font-weight: 700;
-    border-radius: 13px;
-    padding: 10px 22px;
-    box-shadow: 0 2px 13px #f3dc9f5e;
-    cursor: pointer;
-    transition: background 0.2s, color 0.18s;
-    outline: none;
-    letter-spacing: 0.03em;
-    opacity: 0.92;
-  }
+.show-all-btn {
+  position: fixed;
+  bottom: 55px; /* ниже бобра и облака */
+  left: calc(50% - 85px); /* сдвиг влево (кнопка шириной ~170px) */
+  z-index: 105;
+  background: rgba(250,248,236,0.97);
+  color: #a98912;
+  border: none;
+  font-size: 1.07em;
+  font-weight: 700;
+  border-radius: 13px;
+  padding: 10px 22px;
+  box-shadow: 0 2px 13px #f3dc9f5e;
+  cursor: pointer;
+  transition: background 0.2s, color 0.18s;
+  outline: none;
+  letter-spacing: 0.03em;
+  opacity: 0.92;
+}
+.show-all-btn:hover {background: #FFD700; color: #181818; opacity:1;}
+html.dark .show-all-btn {
+  background: #302b44;
+  color: #FFD700;
+  box-shadow: 0 1.5px 8px #221d2f8a;
+}
+@media (max-width: 500px) {
+  .beaver-hold { right: 4px; bottom: 110px; }
+  .show-all-btn { left: 8vw; right: auto; bottom: 44px; }
+}
   .show-all-btn:hover {background: #FFD700; color: #181818; opacity:1;}
   html.dark .show-all-btn {
     background: #302b44;
