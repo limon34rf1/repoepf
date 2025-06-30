@@ -3,211 +3,349 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Дневник</title>
-<style>
-@font-face {
-  font-family: 'Soyuz Grotesk';
-  src: url('oyuz-Grotesk-Bold.woff') format('woff'),
-       url('oyuz-Grotesk-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-display: swap;
-}
-:root {
-  --yellow: #FFD700;
-  --red: #FF4B4B;
-  --green: #6EEB83;
-  --gray: #f6f8fa;
-  --black: #181818;
-  --border-radius: 22px;
-}
-html, body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background: linear-gradient(120deg, #fff 0%, #e8eaf6 100%);
-  font-family: 'Soyuz Grotesk', Arial, sans-serif;
-  color: var(--black);
-  font-size: clamp(1.07em, 4vw, 1.28em);
-  letter-spacing: 0.02em;
-  box-sizing: border-box;
-}
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-header {
-  width: 100vw;
-  background: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  text-align: center;
-  box-shadow: 0 3px 12px 0 #eee;
-  padding: 23px 0 11px 0;
-}
-.site-title {
-  font-family: 'Soyuz Grotesk', Arial, sans-serif;
-  font-size: clamp(2em, 6vw, 2.8em);
-  font-weight: 700;
-  margin-bottom: 10px;
-  letter-spacing: 0.04em;
-  color: var(--black);
-  background: linear-gradient(95deg,#FFD700 60%, #FF4B4B 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.day-selector {
-  display: flex;
-  justify-content: center;
-  gap: 7px;
-  margin-bottom: 0;
-  flex-wrap: wrap;
-}
-.day-btn {
-  border: none;
-  outline: none;
-  background: none;
-  padding: 8px 15px;
-  border-radius: var(--border-radius);
-  font-size: clamp(1em, 3.6vw, 1.21em);
-  font-family: inherit;
-  font-weight: 700;
-  color: #555;
-  cursor: pointer;
-  transition: background .23s, color .13s, box-shadow .13s;
-}
-.day-btn.active, .day-btn:focus {
-  background: var(--yellow);
-  color: var(--black);
-  box-shadow: 0 1.5px 6px #ffe7b8;
-}
-.main-wrapper {
-  width: 100vw;
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 19px 6px 95px 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  box-sizing: border-box;
-}
-.timeline-block {
-  display: flex;
-  align-items: center;
-  padding: 12px 9px 12px 6px;
-  border-radius: var(--border-radius);
-  margin-bottom: 4px;
-  background: #fff;
-  box-shadow: 0 1.5px 9px 0 #f5e6b5;
-  opacity: 0;
-  transform: translateY(18px);
-  animation: blockin 0.45s cubic-bezier(.44,1.5,.55,.94) forwards;
-}
-.timeline-block.past {opacity: 0.33;}
-.timeline-block.active {
-  background: linear-gradient(95deg,#fff8d5 0%, #fff 85%);
-  box-shadow: 0 2.5px 18px 0 #ffeebb, 0 1.5px 8px #ffd70029;
-  border: 2px solid var(--yellow);
-  z-index: 2;
-}
-.timeline-block .time {
-  width: 70px;
-  font-size: 1em;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  flex-shrink: 0;
-}
-.timeline-block .intensity {
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  margin: 0 10px 0 6px;
-  border: 1.5px solid #eee;
-  flex-shrink: 0;
-  transition: box-shadow .17s, background .18s;
-}
-.intensity.normal {background: var(--yellow);}
-.intensity.hard   {background: var(--red);}
-.intensity.light  {background: var(--green);}
-.timeline-block .task {
-  flex: 1;
-  font-size: 1.03em;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1.15;
-}
-@keyframes blockin {
-  from { opacity:0; transform: translateY(18px);}
-  to   { opacity:1; transform: translateY(0);}
-}
-.legend {
-  position: fixed;
-  bottom: 8px; left: 50%; transform: translateX(-50%);
-  background: rgba(255,255,255,0.91);
-  border-radius: 13px;
-  box-shadow: 0 2px 9px #ffeebb60;
-  display: flex; gap: 12px;
-  padding: 7px 11px;
-  z-index: 100;
-  font-size: 0.98em;
-  font-weight: 600;
-  align-items: center;
-  max-width: 98vw;
-}
-.legend .dot {
-  display: inline-block;
-  width: 12px; height: 12px; border-radius: 50%;
-  margin-right: 6px; vertical-align: middle;
-}
-.dot.normal { background: var(--yellow);}
-.dot.hard   { background: var(--red);}
-.dot.light  { background: var(--green);}
-.beaver-hold {
-  position: fixed;
-  left: 50%; bottom: 76px; transform: translateX(-50%);
-  z-index: 105;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  pointer-events: none;
-}
-.beaver-img {
-  width: 80px;
-  filter: drop-shadow(0 5px 18px #dfbe80a8);
-  animation: bobr-pop 0.7s cubic-bezier(.62,2.1,.27,.98);
-}
-@keyframes bobr-pop { from { opacity:0; transform: scale(.84);} to { opacity:1; transform:scale(1);} }
-.bobr-bubble {
-  background: #fff;
-  border-radius: 13px;
-  box-shadow: 0 2px 9px #ffe7b85e;
-  font-size: 0.97em;
-  font-weight: 500;
-  color: #473c18;
-  margin-bottom: 8px;
-  padding: 7px 13px;
-  max-width: 120px;
-  text-align: right;
-  animation: fadeinb 0.5s;
-}
-@keyframes fadeinb { from{opacity:0;} to{opacity:1;} }
-</style>
-
+  <title>Бобр-планировщик</title>
+  <style>
+  @font-face {
+    font-family: 'Soyuz Grotesk';
+    src: url('oyuz-Grotesk-Bold.woff') format('woff'),
+         url('oyuz-Grotesk-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-display: swap;
+  }
+  :root {
+    --yellow: #FFD700;
+    --red: #FF4B4B;
+    --green: #6EEB83;
+    --gray: #f6f8fa;
+    --black: #181818;
+    --white: #fff;
+    --border-radius: 22px;
+    --beaver-shadow: #dfbe80a8;
+    --card-shadow: 0 1.5px 9px 0 #f5e6b5;
+    --bg-gradient: linear-gradient(120deg, #fff 0%, #e8eaf6 100%);
+    --bubble-bg: #fff;
+    --bubble-color: #473c18;
+    --timeline-bg: #fff;
+    --timeline-border: #eee;
+    --rest-bg: #fcf5e7;
+    --rest-bg-dark: #322a20;
+    --rest-line: #FFB964;
+    --rest-line-dark: #FFC886;
+  }
+  html.dark, body.dark {
+    --black: #faf8f3;
+    --white: #232323;
+    --gray: #1a1c22;
+    --bg-gradient: linear-gradient(120deg, #16171d 0%, #2d283b 100%);
+    --beaver-shadow: #232323;
+    --card-shadow: 0 2px 13px 0 #442a0b60;
+    --bubble-bg: #35364e;
+    --bubble-color: #ffe6ad;
+    --timeline-bg: #23232b;
+    --timeline-border: #3b3758;
+    --rest-bg: #322a20;
+    --rest-bg-dark: #2a2320;
+    --rest-line: #FFB964;
+    --rest-line-dark: #FFC886;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: var(--bg-gradient);
+    font-family: 'Soyuz Grotesk', Arial, sans-serif;
+    color: var(--black);
+    font-size: clamp(1.07em, 4vw, 1.28em);
+    letter-spacing: 0.02em;
+    box-sizing: border-box;
+    transition: background 0.5s, color 0.4s;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background: var(--bg-gradient);
+    transition: background 0.5s, color 0.4s;
+  }
+  header {
+    width: 100vw;
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    text-align: center;
+    box-shadow: 0 3px 12px 0 #eee;
+    padding: 23px 0 11px 0;
+    transition: background 0.4s;
+  }
+  .site-title {
+    font-family: 'Soyuz Grotesk', Arial, sans-serif;
+    font-size: clamp(2em, 6vw, 2.8em);
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+    color: var(--black);
+    background: linear-gradient(95deg,#FFD700 60%, #FF4B4B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: color 0.4s;
+  }
+  .day-selector {
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+  .day-btn {
+    border: none;
+    outline: none;
+    background: none;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    font-size: clamp(1em, 3.6vw, 1.21em);
+    font-family: inherit;
+    font-weight: 700;
+    color: #555;
+    cursor: pointer;
+    transition: background .23s, color .13s, box-shadow .13s;
+  }
+  .day-btn.active, .day-btn:focus {
+    background: var(--yellow);
+    color: var(--black);
+    box-shadow: 0 1.5px 6px #ffe7b8;
+  }
+  .theme-btn {
+    position: absolute;
+    top: 21px;
+    right: 21px;
+    z-index: 15;
+    font-size: 1.65em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #b4b0ad;
+    transition: color 0.2s;
+  }
+  .theme-btn:hover {color: #ffd700;}
+  .main-wrapper {
+    width: 100vw;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 19px 6px 105px 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-sizing: border-box;
+  }
+  .timeline-block {
+    display: flex;
+    align-items: center;
+    padding: 12px 9px 12px 6px;
+    border-radius: var(--border-radius);
+    margin-bottom: 4px;
+    background: var(--timeline-bg);
+    box-shadow: var(--card-shadow);
+    border: 1.2px solid var(--timeline-border);
+    opacity: 1;
+    transform: translateY(0);
+    animation: blockin 0.35s cubic-bezier(.44,1.5,.55,.94) forwards;
+    transition: background 0.3s, border 0.3s, color 0.3s, opacity .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .timeline-block.rest-block {
+    background: var(--rest-bg);
+    color: #c28520;
+    font-weight: 700;
+    border: 1.8px solid #FFD700;
+    box-shadow: 0 2px 18px #ffeabb23;
+  }
+  .timeline-block.rest-block::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 7px;
+    border-radius: 6px 0 0 6px;
+    background: linear-gradient(180deg, var(--rest-line), #FFD700 90%);
+    box-shadow: 0 1px 7px #ffc98580;
+    z-index: 2;
+    opacity: .82;
+  }
+  html.dark .timeline-block.rest-block {
+    background: var(--rest-bg-dark);
+    color: #ffca77;
+  }
+  html.dark .timeline-block.rest-block::before {
+    background: linear-gradient(180deg, var(--rest-line-dark), #FFD700 95%);
+    opacity: .68;
+  }
+  .timeline-block.active {
+    background: linear-gradient(95deg,#fff8d5 0%, #fff 85%);
+    box-shadow: 0 2.5px 18px 0 #ffeebb, 0 1.5px 8px #ffd70029;
+    border: 2px solid var(--yellow);
+    z-index: 2;
+  }
+  html.dark .timeline-block.active {
+    background: linear-gradient(95deg,#33333e 0%, #292740 85%);
+    border-color: #FFD700;
+  }
+  .timeline-block .time {
+    width: 70px;
+    font-size: 1em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+    z-index: 3;
+  }
+  .timeline-block .intensity {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    margin: 0 10px 0 6px;
+    border: 1.5px solid #eee;
+    flex-shrink: 0;
+    transition: box-shadow .17s, background .18s;
+    z-index: 3;
+  }
+  .intensity.normal {background: var(--yellow);}
+  .intensity.hard   {background: var(--red);}
+  .intensity.light  {background: var(--green);}
+  .timeline-block .task {
+    flex: 1;
+    font-size: 1.03em;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    line-height: 1.15;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 3;
+  }
+  @keyframes blockin {
+    from { opacity:0; transform: translateY(18px);}
+    to   { opacity:1; transform: translateY(0);}
+  }
+  .timeline-block.hidden-block {
+    opacity: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none;
+    transition: opacity .25s, height .2s;
+    overflow: hidden;
+    border: none;
+    box-shadow: none;
+  }
+  .legend {
+    position: fixed;
+    bottom: 8px; left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.91);
+    border-radius: 13px;
+    box-shadow: 0 2px 9px #ffeebb60;
+    display: flex; gap: 12px;
+    padding: 7px 11px;
+    z-index: 100;
+    font-size: 0.98em;
+    font-weight: 600;
+    align-items: center;
+    max-width: 98vw;
+    transition: background 0.3s;
+  }
+  html.dark .legend {
+    background: rgba(32,32,36,0.93);
+    color: #FFD700;
+  }
+  .legend .dot {
+    display: inline-block;
+    width: 12px; height: 12px; border-radius: 50%;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .dot.normal { background: var(--yellow);}
+  .dot.hard   { background: var(--red);}
+  .dot.light  { background: var(--green);}
+  .beaver-hold {
+    position: fixed;
+    right: 20px; bottom: 80px;
+    z-index: 105;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    pointer-events: none;
+  }
+  .beaver-img {
+    width: 90px;
+    filter: drop-shadow(0 5px 18px var(--beaver-shadow));
+    animation: bobr-pop 0.7s cubic-bezier(.62,2.1,.27,.98);
+  }
+  @keyframes bobr-pop { from { opacity:0; transform: scale(.84);} to { opacity:1; transform:scale(1);} }
+  .bobr-bubble {
+    background: var(--bubble-bg);
+    border-radius: 13px;
+    box-shadow: 0 2px 9px #ffe7b85e;
+    font-size: 0.97em;
+    font-weight: 500;
+    color: var(--bubble-color);
+    margin-bottom: 8px;
+    padding: 7px 13px;
+    max-width: 120px;
+    text-align: center;
+    animation: fadeinb 0.5s;
+    transition: background 0.4s, color 0.4s;
+  }
+  @keyframes fadeinb { from{opacity:0;} to{opacity:1;} }
+  .show-all-btn {
+    position: fixed;
+    bottom: 62px; left: 50%; transform: translateX(-50%);
+    z-index: 200;
+    background: rgba(250,248,236,0.97);
+    color: #a98912;
+    border: none;
+    font-size: 1.07em;
+    font-weight: 700;
+    border-radius: 13px;
+    padding: 10px 22px;
+    box-shadow: 0 2px 13px #f3dc9f5e;
+    cursor: pointer;
+    transition: background 0.2s, color 0.18s;
+    outline: none;
+    letter-spacing: 0.03em;
+    opacity: 0.92;
+  }
+  .show-all-btn:hover {background: #FFD700; color: #181818; opacity:1;}
+  html.dark .show-all-btn {
+    background: #302b44;
+    color: #FFD700;
+    box-shadow: 0 1.5px 8px #221d2f8a;
+  }
+  @media (max-width: 500px) {
+    .main-wrapper {padding: 8px 2vw 120px 2vw;}
+    .site-title { font-size:2em; }
+    .legend {font-size:0.93em; padding: 6px 4px;}
+    .timeline-block .time {width:56px;}
+    .beaver-img {width:65px;}
+    .bobr-bubble {font-size: 0.94em; max-width: 100px;}
+    .beaver-hold {right: 4px;}
+    .theme-btn {top:12px; right:10px; font-size:1.3em;}
+    .show-all-btn {padding: 8px 11px; font-size: 0.96em;}
+  }
+  </style>
 </head>
 <body>
   <header>
+    <button class="theme-btn" id="themeBtn" title="Темная тема">🌙</button>
     <div class="site-title">Мой день</div>
     <nav class="day-selector" id="day-selector"></nav>
   </header>
   <main class="main-wrapper" id="main"></main>
   <div class="beaver-hold" id="beaver-hold" style="display:none"></div>
   <div class="legend">
-    <span><span class="dot normal"></span>нормис</span>
+    <span><span class="dot normal"></span>норм</span>
     <span><span class="dot hard"></span>хард</span>
-    <span><span class="dot light"></span>халява</span>
+    <span><span class="dot light"></span>лёгк</span>
   </div>
+  <button class="show-all-btn" id="showAllBtn" style="display:none"></button>
   <script>
   // === ДАННЫЕ ===
   const WEEKDAYS = [
@@ -219,118 +357,113 @@ header {
     { id: 'saturday',  ru: 'СБ' },
     { id: 'sunday',    ru: 'ВС' }
   ];
-  const SCHEDULE = {
-    monday: [
-      { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
-      { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
-      { time: '10:00-12:00', task: 'олимпиадная математика, всош, вступительные в лицей', intensity: 'hard' },
-      { time: '12:15-13:45', task: 'дз по математике, всош, ОГЭ математика/физика', intensity: 'normal' },
-      { time: '13:45-14:30', task: 'обед', intensity: 'normal' },
-      { time: '14:30-16:30', task: 'анализ данных и статистика', intensity: 'normal' },
-      { time: '17:00-18:30', task: 'алгоритмы, ML, плюсы/питон', intensity: 'hard' },
-      { time: '18:30-19:00', task: 'тренировка, прогулка, тик-ток', intensity: 'normal' },
-      { time: '19:00-19:45', task: 'ужин, отдых', intensity: 'normal' },
-      { time: '19:45-21:30', task: 'ОГЭ, дз по физике/математике', intensity: 'normal' },
-      { time: '22:00-23:30', task: 'всош индивидуальный, практика анализа данных', intensity: 'hard' },
-      { time: '23:30-00:00', task: 'личная разгрузка', intensity: 'normal' },
-      { time: '00:00-01:00', task: 'сон', intensity: 'normal' },
-    ],
-    tuesday: [
-      { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
-      { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
-      { time: '10:00-12:00', task: 'олимпиадная математика: повторение, разбор ошибок', intensity: 'hard' },
-      { time: '12:15-13:45', task: 'физика: теория + задачи', intensity: 'normal' },
-      { time: '13:45-14:30', task: 'обед', intensity: 'normal' },
-      { time: '14:30-16:30', task: 'статистика: завершение курса, практика', intensity: 'normal' },
-      { time: '17:00-18:30', task: 'Python: основы ML', intensity: 'hard' },
-      { time: '18:30-19:00', task: 'тренировка, прогулка', intensity: 'normal' },
-      { time: '19:00-19:45', task: 'ужин', intensity: 'normal' },
-      { time: '19:45-21:30', task: 'анализ данных: практика', intensity: 'normal' },
-      { time: '22:00-23:30', task: 'олимпиадная практика (математика/информатика)', intensity: 'hard' },
-      { time: '23:30-00:00', task: 'отдых', intensity: 'normal' },
-      { time: '00:00-01:00', task: 'сон', intensity: 'normal' },
-    ],
-    wednesday: [
-      { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
-      { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
-      { time: '10:00-12:00', task: 'олимпиадная математика: практика', intensity: 'hard' },
-      { time: '12:15-13:45', task: 'анализ данных: закрепление', intensity: 'normal' },
-      { time: '13:45-14:30', task: 'обед', intensity: 'normal' },
-      { time: '14:30-16:30', task: 'лёгкая тема по выбору', intensity: 'light' },
-      { time: '16:30-19:30', task: 'длинная прогулка, встреча с другом/подругой', intensity: 'normal' },
-      { time: '19:30-20:00', task: 'ужин', intensity: 'normal' },
-      { time: '20:00-21:30', task: 'лёгкая практика Python/математики', intensity: 'light' },
-      { time: '22:00-00:00', task: 'отдых, хобби', intensity: 'normal' },
-      { time: '00:00-01:00', task: 'сон', intensity: 'normal' },
-    ],
-    thursday: [
-      { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
-      { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
-      { time: '10:00-12:00', task: 'олимпиадная математика: новые задачи', intensity: 'hard' },
-      { time: '12:15-13:45', task: 'физика: практика', intensity: 'normal' },
-      { time: '13:45-14:30', task: 'обед', intensity: 'normal' },
-      { time: '14:30-16:30', task: 'анализ данных: углублённая практика', intensity: 'normal' },
-      { time: '17:00-18:30', task: 'Python: алгоритмы', intensity: 'hard' },
-      { time: '18:30-19:00', task: 'тренировка', intensity: 'normal' },
-      { time: '19:00-19:45', task: 'ужин', intensity: 'normal' },
-      { time: '19:45-21:30', task: 'статистика: сложные темы', intensity: 'hard' },
-      { time: '22:00-23:30', task: 'олимпиадные задачи', intensity: 'hard' },
-      { time: '23:30-00:00', task: 'отдых', intensity: 'normal' },
-      { time: '00:00-01:00', task: 'сон', intensity: 'normal' },
-    ],
-    friday: [
-      { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
-      { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
-      { time: '10:00-12:00', task: 'олимпиадная математика', intensity: 'hard' },
-      { time: '12:15-13:45', task: 'физика: разбор ошибок', intensity: 'normal' },
-      { time: '13:45-14:30', task: 'обед', intensity: 'normal' },
-      { time: '14:30-16:30', task: 'анализ данных, проект "Большие вызовы"', intensity: 'normal' },
-      { time: '17:00-18:30', task: 'Python/алгоритмы', intensity: 'hard' },
-      { time: '18:30-19:00', task: 'тренировка', intensity: 'normal' },
-      { time: '19:00-19:45', task: 'ужин', intensity: 'normal' },
-      { time: '19:45-21:30', task: 'итоговая практика за неделю', intensity: 'hard' },
-      { time: '22:00-23:30', task: 'отдых, общение', intensity: 'normal' },
-      { time: '23:30-00:00', task: 'отдых', intensity: 'normal' },
-      { time: '00:00-01:00', task: 'сон', intensity: 'normal' },
-    ],
-    saturday: [
-      { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
-      { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
-      { time: '10:00-12:00', task: 'олимпиадная математика', intensity: 'hard' },
-      { time: '12:15-13:45', task: 'олимпиадная информатика', intensity: 'hard' },
-      { time: '13:45-14:30', task: 'обед', intensity: 'normal' },
-      { time: '14:30-16:30', task: 'анализ данных', intensity: 'normal' },
-      { time: '17:00-18:30', task: 'проект по статистике', intensity: 'normal' },
-      { time: '18:30-19:00', task: 'тренировка', intensity: 'normal' },
-      { time: '19:00-19:45', task: 'ужин', intensity: 'normal' },
-      { time: '19:45-21:30', task: 'практика олимпиадных задач', intensity: 'hard' },
-      { time: '22:00-00:00', task: 'отдых', intensity: 'normal' },
-      { time: '00:00-01:00', task: 'сон', intensity: 'normal' },
-    ],
-    sunday: [
-      { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
-      { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
-      { time: '10:00-12:00', task: 'лёгкая практика по интересной теме', intensity: 'light' },
-      { time: '12:15-13:45', task: 'прогулка, хобби', intensity: 'normal' },
-      { time: '13:45-14:30', task: 'обед', intensity: 'normal' },
-      { time: '14:30-16:30', task: 'свободное время', intensity: 'light' },
-      { time: '17:00-18:30', task: 'обзор материалов за неделю', intensity: 'normal' },
-      { time: '18:30-19:00', task: 'тренировка', intensity: 'normal' },
-      { time: '19:00-19:45', task: 'ужин', intensity: 'normal' },
-      { time: '19:45-21:30', task: 'лёгкая олимпиадная практика или отдых', intensity: 'light' },
-      { time: '22:00-00:00', task: 'отдых', intensity: 'normal' },
-      { time: '00:00-01:00', task: 'сон', intensity: 'normal' },
-    ]
-  };
-  // ==== УТИЛИТЫ ====
-  function getMoscowDate() {
-    // UTC+3 year-round, не зависит от местного времени!
-    let now = new Date();
-    let utc = now.getTime() + now.getTimezoneOffset() * 60000;
-    return new Date(utc + 3 * 3600000);
-  }
+const SCHEDULE = {
+  monday: [
+    { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
+    { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
+    { time: '10:00-11:45', task: 'олимпиадная математика, вступительные', intensity: 'hard' },
+    { time: '12:00-13:15', task: 'дз по математике, подготовка к ОГЭ', intensity: 'normal' },
+    { time: '13:15-14:15', task: 'обед', intensity: 'normal' },
+    { time: '14:15-15:45', task: 'анализ данных: практика на датасетах', intensity: 'normal' },
+    { time: '16:00-17:00', task: 'отдых / свободное окно', intensity: 'light' },
+    { time: '17:00-18:00', task: 'алгоритмы и структуры данных', intensity: 'hard' },
+    { time: '18:00-18:30', task: 'тренировка, прогулка', intensity: 'normal' },
+    { time: '18:45-19:15', task: 'ужин', intensity: 'normal' },
+    { time: '19:15-20:30', task: 'ОГЭ по физике или дополнительная математика', intensity: 'normal' },
+    { time: '20:45-21:15', task: 'рефлексия дня, лёгкая практика, отдых', intensity: 'light' },
+    { time: '23:30-09:00', task: 'сон', intensity: 'normal' }
+  ],
+  tuesday: [
+    { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
+    { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
+    { time: '10:00-11:45', task: 'физика: теория + практика', intensity: 'hard' },
+    { time: '12:00-13:15', task: 'статистика: практика', intensity: 'normal' },
+    { time: '13:15-14:15', task: 'обед', intensity: 'normal' },
+    { time: '14:15-15:45', task: 'Python/ML: кодинг с полуэкспертом', intensity: 'normal' },
+    { time: '16:00-17:00', task: 'отдых / хобби / резерв', intensity: 'light' },
+    { time: '17:00-18:00', task: 'олимпиадная практика (математика/информатика)', intensity: 'hard' },
+    { time: '18:00-18:30', task: 'прогулка/спорт', intensity: 'normal' },
+    { time: '18:45-19:15', task: 'ужин', intensity: 'normal' },
+    { time: '19:15-20:30', task: 'практика анализа данных, ML', intensity: 'normal' },
+    { time: '20:45-21:15', task: 'рефлексия дня, отдых', intensity: 'light' },
+    { time: '23:30-09:00', task: 'сон', intensity: 'normal' }
+  ],
+  wednesday: [
+    { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
+    { time: '10:00-12:00', task: 'олимпиадная математика: практика', intensity: 'hard' },
+    { time: '12:15-13:15', task: 'отдых / длинная прогулка', intensity: 'light' },
+    { time: '13:15-14:15', task: 'обед', intensity: 'normal' },
+    { time: '14:15-15:45', task: 'лёгкая тема по выбору, хобби', intensity: 'light' },
+    { time: '16:00-17:00', task: 'дополнительная физика или проект', intensity: 'normal' },
+    { time: '17:00-17:30', task: 'перерыв / лёгкая зарядка', intensity: 'light' },
+    { time: '18:00-18:45', task: 'ужин', intensity: 'normal' },
+    { time: '19:00-20:00', task: 'разбор пройденного, вопросы, дз', intensity: 'normal' },
+    { time: '20:00-21:15', task: 'отдых, нет учебы', intensity: 'light' },
+    { time: '23:30-09:00', task: 'сон', intensity: 'normal' }
+  ],
+  thursday: [
+    { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
+    { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
+    { time: '10:00-11:30', task: 'алгоритмы, олимпиадная информатика', intensity: 'hard' },
+    { time: '11:45-13:15', task: 'статистика/анализ данных: проект', intensity: 'normal' },
+    { time: '13:15-14:15', task: 'обед', intensity: 'normal' },
+    { time: '14:15-15:45', task: 'физика: задачи', intensity: 'normal' },
+    { time: '16:00-17:00', task: 'отдых/резерв', intensity: 'light' },
+    { time: '17:00-18:30', task: 'Python/ML практика', intensity: 'hard' },
+    { time: '18:30-19:00', task: 'прогулка/спорт', intensity: 'normal' },
+    { time: '19:00-19:45', task: 'ужин', intensity: 'normal' },
+    { time: '20:00-21:00', task: 'олимпиадная математика: новые задачи', intensity: 'normal' },
+    { time: '21:00-21:30', task: 'итоги дня, отдых', intensity: 'light' },
+    { time: '23:30-09:00', task: 'сон', intensity: 'normal' }
+  ],
+  friday: [
+    { time: '09:00-09:30', task: 'зарядка', intensity: 'normal' },
+    { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
+    { time: '10:00-11:45', task: 'итоговая олимпиадная практика', intensity: 'hard' },
+    { time: '12:00-13:15', task: 'физика: разбор ошибок', intensity: 'normal' },
+    { time: '13:15-14:15', task: 'обед', intensity: 'normal' },
+    { time: '14:15-15:45', task: 'анализ данных, проект "Большие вызовы"', intensity: 'normal' },
+    { time: '16:00-17:00', task: 'резерв/отдых', intensity: 'light' },
+    { time: '17:00-18:00', task: 'Python/алгоритмы, ML', intensity: 'hard' },
+    { time: '18:00-18:30', task: 'тренировка, прогулка', intensity: 'normal' },
+    { time: '18:45-19:15', task: 'ужин', intensity: 'normal' },
+    { time: '19:30-20:30', task: 'рефлексия за неделю, анализ, цели', intensity: 'light' },
+    { time: '23:30-09:00', task: 'сон', intensity: 'normal' }
+  ],
+  saturday: [
+    { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
+    { time: '10:00-11:30', task: 'олимпиадная математика', intensity: 'hard' },
+    { time: '11:45-13:15', task: 'олимпиадная информатика', intensity: 'hard' },
+    { time: '13:15-14:15', task: 'обед', intensity: 'normal' },
+    { time: '14:15-15:45', task: 'анализ данных: свободный выбор задачи', intensity: 'normal' },
+    { time: '16:00-17:00', task: 'отдых / встреча с другом', intensity: 'light' },
+    { time: '17:00-18:00', task: 'проект по статистике', intensity: 'normal' },
+    { time: '18:00-18:30', task: 'тренировка, прогулка', intensity: 'normal' },
+    { time: '18:45-19:15', task: 'ужин', intensity: 'normal' },
+    { time: '19:30-21:00', task: 'лёгкая олимпиадная практика/повторение', intensity: 'light' },
+    { time: '23:30-09:00', task: 'сон', intensity: 'normal' }
+  ],
+  sunday: [
+    { time: '09:30-10:00', task: 'завтрак', intensity: 'normal' },
+    { time: '10:00-12:00', task: 'прогулка, хобби, полное расслабление', intensity: 'light' },
+    { time: '12:15-13:15', task: 'обед', intensity: 'normal' },
+    { time: '13:30-14:30', task: 'свободное время / ничего не планируй', intensity: 'light' },
+    { time: '14:30-15:30', task: 'лайтовая практика по интересу (не учёба!)', intensity: 'light' },
+    { time: '16:00-17:00', task: 'резерв: доп. отдых или креатив', intensity: 'light' },
+    { time: '17:00-17:45', task: 'ужин', intensity: 'normal' },
+    { time: '18:00-19:00', task: 'рефлексия недели, корректировка плана', intensity: 'light' },
+    { time: '19:00-23:00', task: 'фильмы, общение, вообще не учёба', intensity: 'light' },
+    { time: '23:30-09:00', task: 'сон', intensity: 'normal' }
+  ]
+};
+
+function getMoscowDate() {
+  let now = new Date();
+  let utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utc + 3 * 3600000);
+}
+
   function getActiveBlockIdx(schedule, d) {
-    // d — Date в МСК
     let h = d.getHours(), m = d.getMinutes();
     for (let i = 0; i < schedule.length; ++i) {
       let [start, end] = schedule[i].time.split('-');
@@ -340,9 +473,8 @@ header {
       let nowMins = h*60 + m;
       if (nowMins < endMins) return i;
     }
-    return schedule.length-1; // если ночь — последний блок (сон)
+    return schedule.length-1;
   }
-  // ==== БОБРЫ ====
   function getBeaverInfo(task, hour) {
     task = (task||"").toLowerCase();
     if (/еда|завтрак|обед|ужин/.test(task)) return {img:"beaver-eat.png", tip:"Не забудь подкрепиться!"};
@@ -351,12 +483,18 @@ header {
     if (/сон/.test(task) || hour >= 0 && hour < 7) return {img:"beaver-sleep.png", tip:"Время спать!"};
     return {img:"beaver-default.png", tip:"Готов к работе!"};
   }
-  // ==== RENDER ====
+  // Является ли блок "отдыхом" или "едой"
+  function isRestTask(task) {
+    return /обед|отдых|разгрузка|перекус|ужин|завтрак/.test((task||"").toLowerCase());
+  }
+
   const main = document.getElementById('main');
   const selector = document.getElementById('day-selector');
   const beaverHold = document.getElementById('beaver-hold');
-  // State
+  const showAllBtn = document.getElementById('showAllBtn');
   let selectedDay = null;
+  let showAll = false;
+
   function renderSelector(today) {
     selector.innerHTML = "";
     WEEKDAYS.forEach((d,i)=>{
@@ -365,6 +503,7 @@ header {
       btn.textContent = d.ru;
       btn.onclick = ()=>{
         selectedDay = d.id;
+        showAll = false;
         renderAll();
       };
       selector.appendChild(btn);
@@ -374,19 +513,21 @@ header {
     main.innerHTML = "";
     schedule.forEach((block, i) => {
       let div = document.createElement('div');
-      div.className = "timeline-block" +
-        (i < activeIdx ? " past" : "") +
-        (i === activeIdx ? " active" : "");
-      div.style.animationDelay = (i*0.04)+'s';
+      let isRest = isRestTask(block.task);
+      let hidden = !showAll && i < activeIdx;
+      div.className = "timeline-block" 
+        + (i === activeIdx ? " active" : "")
+        + (isRest ? " rest-block" : "")
+        + (hidden ? " hidden-block" : "");
+      div.style.animationDelay = (i*0.03)+'s';
       let dot = `<div class="intensity ${block.intensity}"></div>`;
       div.innerHTML = `<div class="time">${block.time}</div>${dot}<div class="task">${block.task}</div>`;
       main.appendChild(div);
     });
-    // Скролл к активному блоку
     setTimeout(()=>{
       let ab = main.querySelector('.timeline-block.active');
       if (ab && ab.scrollIntoView) ab.scrollIntoView({behavior:'smooth', block:'center'});
-    }, 300);
+    }, 120);
   }
   function renderBeaver(schedule, idx, msk) {
     let block = schedule[idx]||{};
@@ -398,20 +539,48 @@ header {
     `;
     beaverHold.style.display = "flex";
   }
+  function renderShowAllBtn(schedule, activeIdx) {
+    showAllBtn.textContent = showAll ? "Скрыть прошедшие" : "Показать прошедшие";
+    showAllBtn.style.display = schedule.length>1 ? "block":"none";
+    showAllBtn.onclick = ()=>{ showAll = !showAll; renderAll(); };
+  }
   function renderAll() {
     let msk = getMoscowDate();
-    let todayIdx = msk.getDay(); // 0=ВС, 1=ПН...
-    let today = WEEKDAYS[(todayIdx+6)%7].id; // ПН=0, ВС=6
+    let todayIdx = msk.getDay();
+    let today = WEEKDAYS[(todayIdx+6)%7].id;
     if (!selectedDay) selectedDay = today;
     renderSelector(today);
     let schedule = SCHEDULE[selectedDay];
     let activeIdx = selectedDay===today ? getActiveBlockIdx(schedule, msk) : 0;
     renderTimeline(schedule, activeIdx);
     renderBeaver(schedule, activeIdx, msk);
+    renderShowAllBtn(schedule, activeIdx);
   }
-  // Init
+
+  // ==== Темная тема ====
+  const themeBtn = document.getElementById('themeBtn');
+  function setTheme(dark) {
+    if (dark) {
+      document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
+      themeBtn.textContent = '☀️';
+      themeBtn.title = "Светлая тема";
+      localStorage.setItem('bobr-theme','dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
+      themeBtn.textContent = '🌙';
+      themeBtn.title = "Тёмная тема";
+      localStorage.setItem('bobr-theme','light');
+    }
+  }
+  themeBtn.onclick = ()=>{
+    setTheme(!document.documentElement.classList.contains('dark'));
+  };
+  if (localStorage.getItem('bobr-theme')==='dark') setTheme(true);
+  else setTheme(false);
+
   renderAll();
-  // Update по таймеру — если страница открыта дольше 1 мин
   setInterval(renderAll, 60000);
   </script>
 </body>
