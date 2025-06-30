@@ -129,22 +129,44 @@
     color: #b4b0ad;
     transition: color 0.2s;
   }
-  .theme-btn:hover {color: #ffd700;}
-.main-wrapper {
-    width: 100vw;
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 19px 6px 110px 6px;  /* ← здесь сразу нужный отступ! */
+  .legend {
+    margin: 24px auto 0 auto;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
-    box-sizing: border-box;
+    gap: 16px;
+    padding: 7px 20px;
+    border-radius: 15px;
+    font-size: 1.07em;
+    font-weight: 600;
+    align-items: center;
+    max-width: 95vw;
+    background: rgba(255,255,255,0.91);
+    box-shadow: 0 2px 9px #ffeebb60;
+    justify-content: center;
+    transition: background 0.3s;
   }
+  html.dark .legend {
+    background: rgba(32,32,36,0.93);
+    color: #FFD700;
+  }
+  .legend .dot {
+    display: inline-block;
+    width: 13px; height: 13px; border-radius: 50%;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .dot.normal { background: var(--yellow);}
+  .dot.hard   { background: var(--red);}
+  .dot.light  { background: var(--green);}
   @media (max-width: 600px) {
-    .main-wrapper {
-      padding: 19px 6px 140px 6px;  /* ← а здесь на мобиле ещё больше! */
+    .legend {
+      margin-top: 14px;
+      gap: 8px;
+      font-size: 0.93em;
+      padding: 4px 3vw;
     }
+    .legend .dot { width: 10px; height: 10px; margin-right: 4px;}
   }
+
+  .theme-btn:hover {color: #ffd700;}
   .timeline-block {
     display: flex;
     align-items: center;
@@ -553,6 +575,15 @@ function getMoscowDate() {
       div.innerHTML = `<div class="time">${block.time}</div>${dot}<div class="task">${block.task}</div>`;
       main.appendChild(div);
     });
+    const legend = document.createElement('div');
+    legend.className = 'legend';
+    legend.innerHTML = `
+      <span><span class="dot normal"></span>нормис</span>
+      <span><span class="dot hard"></span>хар9</span>
+      <span><span class="dot light"></span>халява</span>
+    `;
+    main.appendChild(legend);
+
     setTimeout(()=>{
       let ab = main.querySelector('.timeline-block.active');
       if (ab && ab.scrollIntoView) ab.scrollIntoView({behavior:'smooth', block:'center'});
