@@ -130,20 +130,19 @@
     transition: color 0.2s;
   }
   .theme-btn:hover {color: #ffd700;}
-  .main-wrapper {
+.main-wrapper {
     width: 100vw;
     max-width: 520px;
     margin: 0 auto;
-    padding: 19px 6px 105px 6px;
+    padding: 19px 6px 110px 6px;  /* ← здесь сразу нужный отступ! */
     display: flex;
     flex-direction: column;
     gap: 6px;
     box-sizing: border-box;
-    padding-bottom: 110px;
   }
   @media (max-width: 600px) {
     .main-wrapper {
-      padding-bottom: 140px;
+      padding: 19px 6px 140px 6px;  /* ← а здесь на мобиле ещё больше! */
     }
   }
   .timeline-block {
