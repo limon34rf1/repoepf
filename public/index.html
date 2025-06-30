@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бобр-Планировщик</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    @font-face {
+      font-family: 'Soyuz Grotesk';
+      src: url('/assets/fonts/Soyuz-Grotesk-Bold.woff2') format('woff2'),
+           url('/assets/fonts/Soyuz-Grotesk-Bold.woff') format('woff'),
+           url('/assets/fonts/Soyuz-Grotesk-Bold.otf') format('opentype');
+      font-weight: 700;
+      font-display: swap;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Бобр-Планировщик</h1>
+    <nav>
+      <ul class="days-list" id="daysList"></ul>
+    </nav>
+  </header>
+
+  <main class="timeline-container">
+    <div class="timeline" id="timeline"></div>
+  </main>
+
+  <div class="beaver-container" id="beaverContainer">
+    <img id="beaverImage" src="/assets/images/beaver-default.png" alt="Бобр">
+    <div class="speech-bubble" id="speechBubble">Готов к работе!</div>
+  </div>
+
+  <footer class="footer">
+    <div class="legend">
+      <div class="legend-item"><span>🟡</span> норм — обычная нагрузка</div>
+      <div class="legend-item"><span>🔴</span> хард — высокая нагрузка</div>
+      <div class="legend-item"><span>🟢</span> кайф — лёгкая</div>
+    </div>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>
